@@ -29,7 +29,7 @@ export default function MetaCard({ meta }) {
     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border border-gray-200">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-lg font-semibold text-primary flex-1">
-          {meta.nombre || meta.meta || meta.indicador}
+          {meta.metaProducto || meta.indicador}
         </h3>
         <span
           className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadge(
@@ -41,6 +41,11 @@ export default function MetaCard({ meta }) {
       </div>
 
       <div className="mb-4 space-y-1">
+        {meta.nombre && (
+          <p className="text-sm text-secondary">
+            <span className="font-semibold">Proyecto:</span> {meta.nombre}
+          </p>
+        )}
         <p className="text-sm text-secondary">
           <span className="font-semibold">Programa:</span> {meta.programa}
         </p>

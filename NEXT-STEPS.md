@@ -25,8 +25,8 @@
 
 ### 1. Crear el Repositorio en GitHub
 Ve a: https://github.com/new
-- Nombre sugerido: `dashboard-plan-indicativo-gachancipa`
-- Descripción: "Dashboard interactivo para seguimiento del Plan Indicativo 2025"
+- Nombre sugerido: `dashboard-tenjo`
+- Descripción: "Dashboard interactivo para seguimiento del Plan de Desarrollo Tenjo 2024-2027"
 - Visibilidad: Público o Privado (tú decides)
 - NO inicialices con README (ya lo tenemos)
 
@@ -35,10 +35,10 @@ Ve a: https://github.com/new
 Ejecuta estos comandos (reemplaza con tu URL de GitHub):
 
 ```bash
-cd "c:/Users/pipet/Desktop/Global Analitik/Dashboard web/Metas Dashboard/plan-indicativo-dashboard"
+cd "c:/Users/pipet/Desktop/Global Analitik/dashboard-tenjo/dashboard-tenjo"
 
 # Agregar el repositorio remoto
-git remote add origin https://github.com/TU-USUARIO/TU-REPO.git
+git remote add origin https://github.com/TU-USUARIO/dashboard-tenjo.git
 
 # Renombrar rama a main
 git branch -M main
@@ -78,7 +78,7 @@ FRONTEND_URL=https://tu-dominio.vercel.app
 ```
 
 ### Excel en Producción
-El archivo `backend/data/PlanIndicativo.xlsx` está incluido en el repositorio.
+El archivo `backend/data/PLAN INDICATIVO TENJO.xlsx` está incluido en el repositorio.
 Si el archivo es muy grande o contiene datos sensibles, considera:
 - Subirlo manualmente a Render
 - Usar una base de datos

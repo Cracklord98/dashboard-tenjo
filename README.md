@@ -1,6 +1,6 @@
-# 📊 Dashboard Plan Indicativo - Gachancipá 2025
+# 📊 Dashboard Plan de Desarrollo - Tenjo 2024-2027
 
-Dashboard interactivo para la **Secretaría de Planeación y Servicios Públicos** de la Alcaldía Municipal de Gachancipá, Cundinamarca. Visualiza y analiza en tiempo real el avance del Plan Indicativo 2025, convirtiendo automáticamente datos de Excel en un dashboard web moderno con React, Tailwind CSS y ECharts.
+Dashboard interactivo para la **Secretaría de Planeación** de la Alcaldía Municipal de Tenjo, Cundinamarca. Visualiza y analiza en tiempo real el avance del Plan de Desarrollo 2024-2027, convirtiendo automáticamente datos de Excel en un dashboard web moderno con React, Tailwind CSS y ECharts.
 
 ---
 
@@ -40,21 +40,24 @@ Este proyecto es una **solución completa** que transforma datos de hojas de cá
 
 ### 🎯 Propósito
 
-Facilitar el **seguimiento y análisis** del cumplimiento de metas del Plan Indicativo 2025, proporcionando:
+Facilitar el **seguimiento y análisis** del cumplimiento del Plan de Desarrollo 2024-2027, proporcionando:
 
-- Visibilidad inmediata del avance trimestral (T1, T2, T3, T4)
+- Visibilidad inmediata del avance físico trimestral por eje estratégico
+- Seguimiento de ejecución financiera (apropiación, compromisos, pagos)
 - Identificación rápida de programas con bajo/medio/alto rendimiento
-- Acceso detallado a cada meta con sus indicadores
+- Acceso detallado a metas de resultado y producto
 - Información centralizada para toma de decisiones
 
 ### 📊 Datos que Muestra
 
-- **150+ metas** del Plan Indicativo
-- **Cumplimiento por trimestre** (T1, T2, T3, T4)
-- **Clasificación automática** por rendimiento
-- **Valores ejecutados vs planeados**
-- **Dependencias responsables**
-- **Histórico** (Línea Base 2023, Ejecutado 2024, Esperado 2027)
+- **Metas del Plan de Desarrollo 2024-2027**
+- **Avance físico por trimestre** (T1, T2, T3, T4) de 2025
+- **Ejecución financiera**: Apropiación, Compromisos y Pagos
+- **Jerarquía completa**: Eje → Programa → Subprograma → Metas
+- **Indicadores de resultado y producto**
+- **Clasificación automática** por nivel de avance
+- **Proyectos BPIN** y responsables por meta
+- **Línea base** y metas del cuatrienio
 
 ## 🏗️ Arquitectura del Proyecto
 
@@ -69,9 +72,9 @@ plan-indicativo-dashboard/
 │   │   └── dataController.js        # Lógica de negocio y endpoints
 │   ├── utils/
 │   │   └── excelParser.js           # Parser de Excel a JSON (flexible)
-│   └── data/
-│       ├── README.md                # Instrucciones para el Excel
-│       └── PlanIndicativo.xlsx      # Archivo de datos (colocar aquí)
+    └── data/
+        ├── README.md                       # Instrucciones para el Excel
+        └── PLAN INDICATIVO TENJO.xlsx  # Archivo de datos de Tenjo
 │
 └── frontend/                         # App React + Vite
     ├── package.json                 # Dependencias frontend
@@ -85,7 +88,8 @@ plan-indicativo-dashboard/
         ├── App.jsx                  # Router principal
         ├── pages/
         │   ├── Dashboard.jsx        # Página principal con métricas
-        │   └── Metas.jsx            # Página de metas con filtros
+        │   ├── Metas.jsx            # Página de metas con filtros
+        │   └── Finanzas.jsx         # Página de ejecución financiera
         ├── components/
         │   ├── MetricCard.jsx       # Tarjeta de métrica individual
         │   ├── PerformanceChart.jsx # Gráfico de barras (T3/T4)
@@ -264,17 +268,17 @@ Esto instalará: `react`, `react-dom`, `react-router-dom`, `echarts`, `echarts-f
 
 ### 3. Configurar el Archivo Excel
 
-Coloca tu archivo `PlanIndicativo.xlsx` en la carpeta `backend/data/`:
+Coloca tu archivo `PLAN INDICATIVO TENJO.xlsx` en la carpeta `backend/data/`:
 
 ```bash
 # Windows
-copy "C:\ruta\a\tu\PlanIndicativo.xlsx" backend\data\
+copy "C:\ruta\a\tu\PLAN INDICATIVO TENJO.xlsx" backend\data\
 
 # Linux/Mac
-cp /ruta/a/tu/PlanIndicativo.xlsx backend/data/
+cp "/ruta/a/tu/PLAN INDICATIVO TENJO.xlsx" backend/data/
 ```
 
-**Importante**: El archivo debe llamarse exactamente `PlanIndicativo.xlsx` o actualiza el nombre en `backend/controllers/dataController.js`
+**Importante**: El archivo debe llamarse exactamente `PLAN INDICATIVO TENJO.xlsx` o actualiza el nombre en `backend/utils/excelParser.js`
 
 ## ▶️ Ejecución
 
@@ -323,13 +327,13 @@ npm run dev
 ## 🌐 URLs de Acceso
 
 ### Desarrollo Local
-- **Frontend:** <http://localhost:3000>
+- **Frontend:** <http://localhost:5173> (Vite)
 - **Backend API:** <http://localhost:3002>
 - **Health Check:** <http://localhost:3002/health>
 
 ### Producción
-- **Backend API:** <https://dashboard-gachancipa.onrender.com>
-- **Health Check:** <https://dashboard-gachancipa.onrender.com/health>
+- **Backend API:** <https://dashboard-tenjo.onrender.com>
+- **Health Check:** <https://dashboard-tenjo.onrender.com/health>
 
 ## 📡 API Endpoints
 
@@ -337,9 +341,12 @@ El backend expone los siguientes endpoints REST:
 
 | Endpoint | Método | Descripción | Respuesta |
 |----------|--------|-------------|-----------|
-| `/api/metas` | GET | Obtiene todas las metas con datos completos | Array de objetos meta con T1-T4, evaluación, dependencia |
+| `/api/metas` | GET | Obtiene todas las metas con datos completos | Array de objetos meta con T1-T4, evaluación, dependencia, finanzas |
 | `/api/metrics/global` | GET | Métricas agregadas globales | Total de metas, cumplimiento global, cumplimiento por trimestre (T1-T4) |
 | `/api/metrics/programs` | GET | Performance agrupado por programa | Objeto con programas como keys y métricas por trimestre |
+| `/api/metrics/ejes` | GET | Performance agrupado por eje estratégico | Objeto con ejes, avance físico y ejecución financiera |
+| `/api/financial/summary` | GET | Resumen financiero completo | Total, por eje y por programa (apropiación, compromisos, pagos) |
+| `/api/reload` | POST | Recarga datos desde Excel (limpia caché) | Mensaje de éxito y metadata actualizada |
 | `/health` | GET | Health check del servidor | `{status: "OK", message: "Server is running"}` |
 
 ### Ejemplo de Respuesta `/api/metrics/global`
@@ -387,11 +394,11 @@ El backend expone los siguientes endpoints REST:
 
 #### Visualizaciones Interactivas
 - **Gráfico de Barras Comparativo**: 
-  - Muestra los 8 principales programas
-  - Compara cumplimiento entre T3 y T4
+  - Muestra los principales programas y ejes
+  - Compara cumplimiento por trimestre
   - Tooltips informativos al pasar el mouse
   - Rotación de etiquetas para mejor legibilidad
-  - Colores diferenciados: T3 (amarillo/warning), T4 (rojo/error)
+  - Colores de Tenjo: Amarillo (#dab109), Verde (#085c2b), Rojo (#6d0006)
 
 - **Gráfico de Distribución por Nivel**:
   - Gráfico de dona (doughnut chart)
@@ -455,15 +462,50 @@ Cada meta se presenta en una tarjeta con:
 
 - **Indicador Visual**: Barra de progreso con colores según cumplimiento
 
+### 💰 Vista de Finanzas (Nueva Página)
+
+#### Resumen Financiero General
+Tarjetas principales con indicadores financieros:
+- **Apropiación Definitiva**: Presupuesto total aprobado para 2025
+- **Compromisos**: Monto comprometido con porcentaje sobre apropiación
+- **Pagos Realizados**: Monto pagado con porcentaje de ejecución
+- **Plan Financiero PDM**: Proyección 2024-2027
+
+#### Barras de Progreso de Ejecución
+- Visualización clara del porcentaje de compromisos
+- Visualización del porcentaje de pagos
+- Colores diferenciados (amarillo para compromisos, verde para pagos)
+
+#### Tabs de Visualización
+**Por Eje Estratégico:**
+- Tabla completa con todos los ejes del Plan de Desarrollo
+- Columnas: Apropiación, Compromisos, Pagos
+- Porcentajes de compromisos y pagos
+- Indicadores de color según nivel de ejecución
+
+**Por Programa:**
+- Desglose financiero por cada programa PDT
+- Mismas métricas que por eje
+- Ordenamiento por monto de apropiación
+- Identificación rápida de programas con mayor/menor ejecución
+
+#### Características de las Tablas Financieras
+- Formato de moneda con separadores de miles
+- Badges de color según porcentaje de ejecución:
+  - Verde: ≥70% (buena ejecución)
+  - Amarillo: 40-69% (ejecución media)
+  - Rojo: <40% (ejecución baja)
+- Ordenamiento descendente por apropiación
+
 ### 🎨 Diseño y UX
 
-#### Sistema de Colores Personalizado
-- **Primary** (#1E3A8A): Azul institucional para headers
-- **Accent** (#0891B2): Cyan para elementos destacados
-- **Success** (#059669): Verde para alto rendimiento
-- **Warning** (#D69E2E): Amarillo para rendimiento medio
-- **Error** (#E53E3E): Rojo para bajo rendimiento
-- **Background** (#F3F4F6): Gris claro para fondo
+#### Sistema de Colores Personalizado (Tenjo)
+- **Primary** (#6d0006): Rojo institucional de Tenjo para headers
+- **Accent** (#dab109): Amarillo de Tenjo para elementos destacados
+- **Success** (#085c2b): Verde de Tenjo para alto rendimiento
+- **Warning** (#dab109): Amarillo para rendimiento medio
+- **Error** (#6d0006): Rojo para bajo rendimiento
+- **Background** (#FAFBFC): Gris claro para fondo
 
 #### Animaciones
 - `animate-fade-in`: Entrada suave de elementos
@@ -476,10 +518,11 @@ Cada meta se presenta en una tarjeta con:
 - Navegación optimizada para todos los tamaños
 
 ### 🔄 Navegación
-- **Header fijo** con logo y título
+- **Header fijo** con logo y título del municipio de Tenjo
 - Tabs de navegación:
-  - Dashboard (vista principal)
-  - Metas (vista detallada)
+  - Dashboard (vista principal con métricas generales)
+  - Metas (vista detallada de metas de resultado y producto)
+  - Finanzas (ejecución presupuestal por eje y programa)
 - React Router para navegación SPA sin recargas
 
 ## 🛠️ Personalización

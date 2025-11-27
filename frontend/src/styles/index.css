@@ -18,19 +18,19 @@
   }
 
   .progress-bar {
-    @apply bg-gradient-to-r from-blue-600 to-green-500 rounded h-2 transition-all duration-1000 ease-in-out;
+    @apply bg-gradient-to-r from-accent to-success rounded h-2 transition-all duration-1000 ease-in-out;
   }
 
   .status-high {
-    @apply text-green-600 font-semibold;
+    @apply text-success font-semibold;
   }
 
   .status-medium {
-    @apply text-yellow-600 font-semibold;
+    @apply text-accent font-semibold;
   }
 
   .status-low {
-    @apply text-red-600 font-semibold;
+    @apply text-error font-semibold;
   }
 
   .filter-btn {
@@ -38,7 +38,7 @@
   }
 
   .filter-btn.active {
-    @apply bg-blue-600 text-white border-blue-600;
+    @apply bg-primary text-white border-primary;
   }
 
   .nav-link {
@@ -50,7 +50,7 @@
   }
 
   .nav-link.active {
-    @apply bg-white text-blue-600 font-semibold;
+    @apply bg-white text-primary font-semibold;
   }
 }
 
@@ -73,16 +73,16 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #0891b2;
+  background: #6d0006;
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #0e7490;
+  background: #8d0008;
 }
 
 /* Firefox scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #0891b2 #f1f1f1;
+  scrollbar-color: #6d0006 #f1f1f1;
 }

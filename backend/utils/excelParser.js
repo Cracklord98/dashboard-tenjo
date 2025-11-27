@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
  * @param {string} filename - Name of the Excel file
  * @returns {Object} Parsed data with metas and metadata
  */
-export function parseExcelToJSON(filename = "PlanIndicativo.xlsx") {
+export function parseExcelToJSON(filename = "PLAN INDICATIVO TENJO.xlsx") {
   try {
     const filePath = join(__dirname, "../data", filename);
     console.log("📂 Intentando leer archivo Excel desde:", filePath);
@@ -34,80 +34,46 @@ export function parseExcelToJSON(filename = "PlanIndicativo.xlsx") {
       );
     }
 
-    // Transform data to match expected structure
+    // Transform data to match expected structure for Tenjo
     const metas = rawData.map((row, index) => {
       // Parse numbers safely
       const parseNum = (value) => {
         if (value === null || value === undefined || value === "") return 0;
-        const num = parseFloat(value);
+        // Remove commas and parse
+        const cleaned = String(value).replace(/,/g, "");
+        const num = parseFloat(cleaned);
         return isNaN(num) ? 0 : num;
       };
 
-      // Parse T1-T4 values
+      // Parse T1-T4 values for 2025
       const t1_plan = parseNum(
-        row["T1. PLANEADO 2025"] ||
-          row["T1 PLANEADO 2025"] ||
-          row["T1 PLANEADO"] ||
-          row.T1_PLANEADO ||
-          row["T1_Plan"]
+        row["T1 PLANEADO 2025"] || row["T1. PLANEADO 2025"] || 0
       );
       const t1_ejec = parseNum(
-        row["T1. EJECUTADO 2025"] ||
-          row["T1 EJECUTADO 2025"] ||
-          row["T1 EJECUTADO"] ||
-          row.T1_EJECUTADO ||
-          row["T1_Ejec"]
+        row["T1 EJECUTADO 2025"] || row["T1. EJECUTADO 2025"] || 0
       );
       const t2_plan = parseNum(
-        row["T2. PLANEADO 2025"] ||
-          row["T2 PLANEADO 2025"] ||
-          row["T2 PLANEADO"] ||
-          row.T2_PLANEADO ||
-          row["T2_Plan"]
+        row["T2 PLANEADO 2025"] || row["T2. PLANEADO 2025"] || 0
       );
       const t2_ejec = parseNum(
-        row["T2. EJECUTADO 2025"] ||
-          row["T2 EJECUTADO 2025"] ||
-          row["T2 EJECUTADO"] ||
-          row.T2_EJECUTADO ||
-          row["T2_Ejec"]
+        row["T2 EJECUTADO 2025"] || row["T2. EJECUTADO 2025"] || 0
       );
       const t3_plan = parseNum(
-        row["T3. PLANEADO 2025"] ||
-          row["T3 PLANEADO 2025"] ||
-          row["T3 PLANEADO"] ||
-          row.T3_PLANEADO ||
-          row["T3_Plan"]
+        row["T3 PLANEADO 2025"] || row["T3. PLANEADO 2025"] || 0
       );
       const t3_ejec = parseNum(
-        row["T3. EJECUTADO 2025"] ||
-          row["T3 EJECUTADO 2025"] ||
-          row["T3 EJECUTADO"] ||
-          row.T3_EJECUTADO ||
-          row["T3_Ejec"]
+        row["T3 EJECUTADO 2025"] || row["T3. EJECUTADO 2025"] || 0
       );
       const t4_plan = parseNum(
-        row["T4. PLANEADO 2025"] ||
-          row["T4 PLANEADO 2025"] ||
-          row["T4 PLANEADO"] ||
-          row.T4_PLANEADO ||
-          row["T4_Plan"]
+        row["T4 PLANEADO 2025"] || row["T4. PLANEADO 2025"] || 0
       );
       const t4_ejec = parseNum(
-        row["T.4 EJECUTADO 2025"] ||
-          row["T4 EJECUTADO 2025"] ||
-          row["T4 EJECUTADO"] ||
-          row.T4_EJECUTADO ||
-          row["T4_Ejec"]
+        row["T4 EJECUTADO 2025"] || row["T4. EJECUTADO 2025"] || 0
       );
 
       // Calculate totals
-      const totalPlanExcel = parseNum(
-        row["TOTAL PLANEADO 2025"] || row["TOTAL PLANEADO"]
-      );
-      const totalEjecExcel = parseNum(
-        row["TOTAL EJECUTADO 2025"] || row["TOTAL EJECUTADO"]
-      );
+      const totalPlanExcel = parseNum(row["TOTAL PLANEADO 2025"] || 0);
+      const totalEjecExcel = parseNum(row["TOTAL EJECUTADO 2025"] || 0);
 
       const calculatedTotalPlan = t1_plan + t2_plan + t3_plan + t4_plan;
       const calculatedTotalEjec = t1_ejec + t2_ejec + t3_ejec + t4_ejec;
@@ -115,87 +81,76 @@ export function parseExcelToJSON(filename = "PlanIndicativo.xlsx") {
       const totalPlan = totalPlanExcel || calculatedTotalPlan;
       const totalEjec = totalEjecExcel || calculatedTotalEjec;
 
-      // Calculate avance - Fix: 1 means 100%, not 1%
-      let avanceExcel = parseNum(
-        row["AVANCE 2025"] ||
-          row["% TOTAL AVANCE 2025"] ||
-          row["% AVANCE"] ||
-          row.AVANCE
-      );
+      // Calculate avance
+      let avanceExcel = parseNum(row["AVANCE 2025"] || 0);
 
-      // If avance is between 0 and 1, convert to percentage (e.g., 0.85 -> 85%)
+      // If avance is between 0 and 1, convert to percentage
       if (avanceExcel > 0 && avanceExcel <= 1) {
         avanceExcel = avanceExcel * 100;
       }
 
-      // Handle errors: if avance is greater than 100 or negative, set to 0
+      // Handle errors: if avance is greater than 100 or negative, recalculate
       if (avanceExcel > 100 || avanceExcel < 0) {
-        avanceExcel = 0;
+        avanceExcel = totalPlan > 0 ? (totalEjec / totalPlan) * 100 : 0;
       }
 
       const avance =
         avanceExcel || (totalPlan > 0 ? (totalEjec / totalPlan) * 100 : 0);
 
+      // Parse financial data
+      const apropiacionDefinitiva = parseNum(
+        row["APROPIACION DEFINITIVA 2025"] || 0
+      );
+      const compromisos = parseNum(row["COMPROMISOS 2025"] || 0);
+      const pagos = parseNum(row["PAGOS 2025"] || 0);
+      const ejecucionFinanciera = parseNum(row["% EJECUCIÓN FINANCIERA"] || 0);
+
       return {
-        id: row.No || row["N°"] || row.N || row.ID || index + 1,
-        eje: (row["   EJE"] || row.EJE || "").trim(),
-        sectorPrograma: row.SECTOR || row["SECTOR PROGRAMA"] || "",
-        nombreSectorPrograma:
-          row["NOMBRE DEL PROGRAMA"] ||
-          row["NOMBRE SECTOR PROGRAMA"] ||
-          row["NOMBRE SECTOR"] ||
-          "",
-        objetivoMeta:
-          row["OBJETIVO DEL PROGRAMA"] ||
-          row["OBJETIVO DE META DO"] ||
-          row["OBJETIVO META"] ||
-          "",
-        metaPrograma:
-          row["META DE RESULTADO"] ||
-          row["META DE PROGRAMA DO"] ||
-          row["META PROGRAMA"] ||
-          "",
-        nIndicador:
-          row["N° META RESULTADO"] ||
-          row["N° INDICADOR"] ||
-          row.NINDICADOR ||
-          "",
-        lineaBase: parseFloat(
-          row["LÍNEA BASE (2023)"] ||
-            row["LINEA BASE (2023)"] ||
-            row["LINEA BASE"] ||
-            0
+        id: row["COD. INT. (Meta)"] || row["COD META PRODUCTO"] || index + 1,
+        // Estructura jerárquica
+        eje: (row.EJE || "").trim(),
+        ponderadorEje: parseNum(row["PONDERADOR EJE"] || 0),
+        nombreSector: row["NOMBRE DE SECTOR"] || "",
+        sectorMga: row["SECTOR MGA"] || "",
+        programaMga: row["PROGRAMA MGA"] || "",
+        codIntPrograma: row["COD. INT. PROGRAMA"] || "",
+        programaPdt: row["PROGRAMA PDT"] || "",
+        codSubprograma: row["COD SUBPROGRAMA"] || "",
+        codIntSubprograma: row["COD. INT. SUBPROGRAMA"] || "",
+        subprograma: row.SUBPROGRAMA || "",
+
+        // Metas de Resultado
+        codIntMeta: row["COD. INT. (Meta)"] || "",
+        metaResultado:
+          row["MR / META DE RESULTADO"] || row["META DE RESULTADO"] || "",
+        indicadorResultado: row["INDICADOR DE RESULTADO"] || "",
+        lineaBase: parseNum(row["L.B"] || row["L.B (Linea Base)"] || 0),
+
+        // Proyecto
+        productoMga: row["PRODUCTO MGA"] || "",
+        bpin: row.BPIN || "",
+        nombreProyecto: row["NOMBRE DEL PROYECTO"] || "",
+
+        // Meta de Producto
+        codMetaProducto: row["COD META PRODUCTO"] || "",
+        metaProducto: row["META DE PRODUCTO"] || "",
+        lineaBaseProducto: row["L.B (Producto)"] || "",
+        unidadMedida: row["UNIDAD DE MEDIDA"] || "",
+        tendenciaIndicador: row["TENDENCIA INDICADOR"] || "",
+        indicador: row.INDICADOR || "",
+        responsable: row.RESPONSABLE || "",
+        pactoPorNinez: row["PACTO POR LA NIÑEZ"] || "",
+
+        // Avance físico
+        valorEsperadoCuatrienio: parseNum(
+          row["VALOR ESPERADO CUATRIENIO"] || 0
         ),
-        ejecutado2024: parseFloat(
-          row["Ejecutado (2024)"] || row.EJECUTADO || 0
+        porcentajeEjecutadoVsCuatrienio: parseNum(
+          row["% TOTAL EJECUTADO (Año) VS CUATRIENIO"] || 0
         ),
-        esperado2027: parseFloat(
-          row["ESPERADO 2027"] || row["ESPERADO 2027_1"] || row.ESPERADO || 0
-        ),
-        dependenciaResponsable:
-          row["DEPENDENCIA RESPONSABLE"] || row.DEPENDENCIA || "",
-        nMetasProyecto: parseInt(
-          row["N° BANDO DE PROYECTO"] ||
-            row["N° METAS EN PROYECTO"] ||
-            row["N METAS PROYECTO"] ||
-            0
-        ),
-        nMetasProtect: parseInt(
-          row["N° METAS PROYECTO PROTECT"] || row["N METAS PROTECT"] || 0
-        ),
-        numeroMeta:
-          row["N° DE META EN EL PLAN DE DESARROLLO"] ||
-          row["NUMERO META"] ||
-          "",
-        nombre: row["NOMBRE DEL PROYECTO"] || row.NOMBRE || "",
-        metaProducto: row["META DE PRODUCTO"] || row.META || "",
-        indicadorProducto: row["INDICADOR DE PRODUCTO"] || row.INDICADOR || "",
-        lineaBase2023: parseFloat(
-          row["LINEA BASE (2023)"] || row["LÍNEA BASE (2023)"] || 0
-        ),
-        codigoDane: row["CODIGO DANE"] || "",
-        codigoCcpet: row["CÓDIGO CCPET"] || row["CODIGO CCPET"] || "",
-        indicador: row.INDICADOR || row["INDICADOR DE PRODUCTO"] || "",
+        valorEsperado2025: parseNum(row["VALOR ESPERADO 2025"] || 0),
+
+        // Trimestres
         t1_plan,
         t1_ejec,
         t2_plan,
@@ -207,24 +162,22 @@ export function parseExcelToJSON(filename = "PlanIndicativo.xlsx") {
         totalPlan,
         totalEjec,
         avance,
-        avanceEstado: parseFloat(
-          row["% TOTAL PLANEADO 2025"] ||
-            row["% EN TOTAL DEL ESTADO"] ||
-            row["% ESTADO"] ||
-            0
-        ),
-        programa:
-          row["NOMBRE DEL PROGRAMA"] ||
-          row["ESTADO PROGRAMA DO-NO-DO PROGRAMA"] ||
-          row["ESTADO PROGRAMA"] ||
-          row.PROGRAMA ||
-          row.ESTADO ||
-          "Sin Programa",
-        estadoProyecto:
-          row["ESTADO PROGRAMADO-NO PROGRAMADO"] ||
-          row["ESTADO DEL PROYECTO"] ||
-          row["ESTADO PROYECTO"] ||
-          "",
+
+        estado: row.ESTADO || "",
+        soportesCumplimiento: row["SOPORTES DE CUMPLIMIENTO"] || "",
+
+        // Datos financieros
+        apropiacionDefinitiva,
+        compromisos,
+        pagos,
+        ejecucionFinanciera:
+          ejecucionFinanciera > 0 && ejecucionFinanciera <= 1
+            ? ejecucionFinanciera * 100
+            : ejecucionFinanciera,
+        planFinancieroPdm: parseNum(row["PLAN FINANCIERO PDM 2024-2027"] || 0),
+
+        // Clasificación para compatibilidad
+        programa: row["PROGRAMA PDT"] || row.SUBPROGRAMA || "Sin Programa",
         evaluacion: calculateEvaluation(avance),
       };
     });
@@ -393,4 +346,139 @@ export function calculateProgramPerformance(metas) {
   });
 
   return programs;
+}
+
+/**
+ * Calculate performance by Eje (Strategic Axis)
+ */
+export function calculateEjePerformance(metas) {
+  const ejes = {};
+
+  metas.forEach((meta) => {
+    const eje = meta.eje || "Sin Eje";
+
+    if (!ejes[eje]) {
+      ejes[eje] = {
+        metas_count: 0,
+        ponderador: meta.ponderadorEje || 0,
+        total_plan: 0,
+        total_ejec: 0,
+        apropiacion: 0,
+        compromisos: 0,
+        pagos: 0,
+      };
+    }
+
+    ejes[eje].metas_count++;
+    ejes[eje].total_plan += meta.totalPlan;
+    ejes[eje].total_ejec += meta.totalEjec;
+    ejes[eje].apropiacion += meta.apropiacionDefinitiva || 0;
+    ejes[eje].compromisos += meta.compromisos || 0;
+    ejes[eje].pagos += meta.pagos || 0;
+  });
+
+  // Calculate percentages
+  Object.keys(ejes).forEach((eje) => {
+    const ejeData = ejes[eje];
+    ejeData.avance_fisico =
+      ejeData.total_plan > 0
+        ? Number(((ejeData.total_ejec / ejeData.total_plan) * 100).toFixed(1))
+        : 0;
+    ejeData.ejecucion_financiera =
+      ejeData.apropiacion > 0
+        ? Number(((ejeData.pagos / ejeData.apropiacion) * 100).toFixed(1))
+        : 0;
+  });
+
+  return ejes;
+}
+
+/**
+ * Calculate financial summary
+ */
+export function calculateFinancialSummary(metas) {
+  let totalApropiacion = 0;
+  let totalCompromisos = 0;
+  let totalPagos = 0;
+  let totalPlanFinanciero = 0;
+
+  const byPrograma = {};
+  const byEje = {};
+
+  metas.forEach((meta) => {
+    totalApropiacion += meta.apropiacionDefinitiva || 0;
+    totalCompromisos += meta.compromisos || 0;
+    totalPagos += meta.pagos || 0;
+    totalPlanFinanciero += meta.planFinancieroPdm || 0;
+
+    // By Program
+    const programa = meta.programaPdt || "Sin Programa";
+    if (!byPrograma[programa]) {
+      byPrograma[programa] = {
+        apropiacion: 0,
+        compromisos: 0,
+        pagos: 0,
+      };
+    }
+    byPrograma[programa].apropiacion += meta.apropiacionDefinitiva || 0;
+    byPrograma[programa].compromisos += meta.compromisos || 0;
+    byPrograma[programa].pagos += meta.pagos || 0;
+
+    // By Eje
+    const eje = meta.eje || "Sin Eje";
+    if (!byEje[eje]) {
+      byEje[eje] = {
+        apropiacion: 0,
+        compromisos: 0,
+        pagos: 0,
+      };
+    }
+    byEje[eje].apropiacion += meta.apropiacionDefinitiva || 0;
+    byEje[eje].compromisos += meta.compromisos || 0;
+    byEje[eje].pagos += meta.pagos || 0;
+  });
+
+  // Calculate percentages
+  Object.keys(byPrograma).forEach((programa) => {
+    const prog = byPrograma[programa];
+    prog.porcentaje_compromisos =
+      prog.apropiacion > 0
+        ? Number(((prog.compromisos / prog.apropiacion) * 100).toFixed(1))
+        : 0;
+    prog.porcentaje_pagos =
+      prog.apropiacion > 0
+        ? Number(((prog.pagos / prog.apropiacion) * 100).toFixed(1))
+        : 0;
+  });
+
+  Object.keys(byEje).forEach((eje) => {
+    const ejeData = byEje[eje];
+    ejeData.porcentaje_compromisos =
+      ejeData.apropiacion > 0
+        ? Number(((ejeData.compromisos / ejeData.apropiacion) * 100).toFixed(1))
+        : 0;
+    ejeData.porcentaje_pagos =
+      ejeData.apropiacion > 0
+        ? Number(((ejeData.pagos / ejeData.apropiacion) * 100).toFixed(1))
+        : 0;
+  });
+
+  return {
+    total: {
+      apropiacion: totalApropiacion,
+      compromisos: totalCompromisos,
+      pagos: totalPagos,
+      plan_financiero: totalPlanFinanciero,
+      porcentaje_compromisos:
+        totalApropiacion > 0
+          ? Number(((totalCompromisos / totalApropiacion) * 100).toFixed(1))
+          : 0,
+      porcentaje_pagos:
+        totalApropiacion > 0
+          ? Number(((totalPagos / totalApropiacion) * 100).toFixed(1))
+          : 0,
+    },
+    by_programa: byPrograma,
+    by_eje: byEje,
+  };
 }

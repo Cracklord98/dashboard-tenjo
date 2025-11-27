@@ -9,6 +9,12 @@ export default function PerformanceChart({ programPerformance }) {
   }
 
   const programs = Object.keys(programPerformance).slice(0, 8);
+  const t1Data = programs.map(
+    (program) => programPerformance[program].t1_cumplimiento
+  );
+  const t2Data = programs.map(
+    (program) => programPerformance[program].t2_cumplimiento
+  );
   const t3Data = programs.map(
     (program) => programPerformance[program].t3_cumplimiento
   );
@@ -31,7 +37,7 @@ export default function PerformanceChart({ programPerformance }) {
       },
     },
     legend: {
-      data: ["T3", "T4"],
+      data: ["T1", "T2", "T3", "T4"],
       top: 10,
     },
     grid: {
@@ -60,11 +66,27 @@ export default function PerformanceChart({ programPerformance }) {
     },
     series: [
       {
+        name: "T1",
+        type: "bar",
+        data: t1Data,
+        itemStyle: {
+          color: "#085c2b",
+        },
+      },
+      {
+        name: "T2",
+        type: "bar",
+        data: t2Data,
+        itemStyle: {
+          color: "#dab109",
+        },
+      },
+      {
         name: "T3",
         type: "bar",
         data: t3Data,
         itemStyle: {
-          color: "#D69E2E",
+          color: "#3B82F6",
         },
       },
       {
@@ -72,7 +94,7 @@ export default function PerformanceChart({ programPerformance }) {
         type: "bar",
         data: t4Data,
         itemStyle: {
-          color: "#E53E3E",
+          color: "#6d0006",
         },
       },
     ],

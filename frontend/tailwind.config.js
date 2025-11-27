@@ -5,12 +5,17 @@ export default {
     extend: {
       colors: {
         background: "#FAFBFC",
-        primary: "#1A2332",
+        primary: "#6d0006", // Rojo Tenjo
         secondary: "#4A5568",
-        accent: "#2B6CB0",
-        success: "#38A169",
-        warning: "#D69E2E",
-        error: "#E53E3E",
+        accent: "#dab109", // Amarillo Tenjo
+        success: "#085c2b", // Verde Tenjo
+        warning: "#dab109",
+        error: "#6d0006",
+        tenjo: {
+          red: "#6d0006",
+          yellow: "#dab109",
+          green: "#085c2b",
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],

@@ -5,6 +5,9 @@ import {
   getMetasData,
   getGlobalMetrics,
   getProgramPerformance,
+  getEjePerformance,
+  getFinancialSummary,
+  reloadData,
 } from "./controllers/dataController.js";
 
 dotenv.config();
@@ -51,6 +54,9 @@ app.use((req, res, next) => {
 app.get("/api/metas", getMetasData);
 app.get("/api/metrics/global", getGlobalMetrics);
 app.get("/api/metrics/programs", getProgramPerformance);
+app.get("/api/metrics/ejes", getEjePerformance);
+app.get("/api/financial/summary", getFinancialSummary);
+app.post("/api/reload", reloadData);
 
 // Health check
 app.get("/health", (req, res) => {
@@ -73,4 +79,7 @@ app.listen(PORT, () => {
   console.log(`   - GET /api/metas`);
   console.log(`   - GET /api/metrics/global`);
   console.log(`   - GET /api/metrics/programs`);
+  console.log(`   - GET /api/metrics/ejes`);
+  console.log(`   - GET /api/financial/summary`);
+  console.log(`   - POST /api/reload`);
 });

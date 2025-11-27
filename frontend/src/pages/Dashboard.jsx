@@ -44,17 +44,18 @@ export default function Dashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-white">
-              📊 DASHBOARD PLAN DE DESARROLLO 2024-2027 GACHANCIPA
+              📊 DASHBOARD PLAN DE DESARROLLO 2024-2027 TENJO
             </h1>
-            <p class="text-gray-600 mt-1">
-              ALCALDIA DE GACHANCIPA, CUNDINAMARCA
-            </p>
+          
             <nav className="flex gap-2">
               <Link to="/" className="nav-link active">
                 Dashboard
               </Link>
               <Link to="/metas" className="nav-link text-white">
                 Metas
+              </Link>
+              <Link to="/finanzas" className="nav-link text-white">
+                Finanzas
               </Link>
             </nav>
           </div>
@@ -64,37 +65,64 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in">
-          <MetricCard
-            title="Cumplimiento Global 2025"
-            value={`${metrics?.cumplimiento_global}%`}
-            icon="🎯"
-            color="accent"
-            progress={metrics?.cumplimiento_global}
-            subtitle={`${formatCurrency(
-              metrics?.total_ejec
-            )} / ${formatCurrency(metrics?.total_plan)}`}
-          />
-          <MetricCard
-            title="T3 - Trimestre 3"
-            value={`${metrics?.cumplimiento_t3}%`}
-            icon="📊"
-            color="warning"
-            progress={metrics?.cumplimiento_t3}
-            subtitle={`${formatCurrency(
-              metrics?.total_t3_ejec
-            )} / ${formatCurrency(metrics?.total_t3_plan)}`}
-          />
-          <MetricCard
-            title="T4 - Trimestre 4"
-            value={`${metrics?.cumplimiento_t4}%`}
-            icon="📉"
-            color="error"
-            progress={metrics?.cumplimiento_t4}
-            subtitle={`${formatCurrency(
-              metrics?.total_t4_ejec
-            )} / ${formatCurrency(metrics?.total_t4_plan)}`}
-          />
+        <div className="mb-8 animate-fade-in">
+          {/* Cumplimiento Global */}
+          <div className="mb-6">
+            <MetricCard
+              title="Cumplimiento Global 2025"
+              value={`${metrics?.cumplimiento_global}%`}
+              icon="🎯"
+              color="accent"
+              progress={metrics?.cumplimiento_global}
+              subtitle={`${formatCurrency(
+                metrics?.total_ejec
+              )} / ${formatCurrency(metrics?.total_plan)}`}
+            />
+          </div>
+
+          {/* Trimestres */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              title="T1 - Trimestre 1"
+              value={`${metrics?.cumplimiento_t1}%`}
+              icon="📈"
+              color="success"
+              progress={metrics?.cumplimiento_t1}
+              subtitle={`${formatCurrency(
+                metrics?.total_t1_ejec
+              )} / ${formatCurrency(metrics?.total_t1_plan)}`}
+            />
+            <MetricCard
+              title="T2 - Trimestre 2"
+              value={`${metrics?.cumplimiento_t2}%`}
+              icon="📊"
+              color="accent"
+              progress={metrics?.cumplimiento_t2}
+              subtitle={`${formatCurrency(
+                metrics?.total_t2_ejec
+              )} / ${formatCurrency(metrics?.total_t2_plan)}`}
+            />
+            <MetricCard
+              title="T3 - Trimestre 3"
+              value={`${metrics?.cumplimiento_t3}%`}
+              icon="📉"
+              color="warning"
+              progress={metrics?.cumplimiento_t3}
+              subtitle={`${formatCurrency(
+                metrics?.total_t3_ejec
+              )} / ${formatCurrency(metrics?.total_t3_plan)}`}
+            />
+            <MetricCard
+              title="T4 - Trimestre 4"
+              value={`${metrics?.cumplimiento_t4}%`}
+              icon="📋"
+              color="error"
+              progress={metrics?.cumplimiento_t4}
+              subtitle={`${formatCurrency(
+                metrics?.total_t4_ejec
+              )} / ${formatCurrency(metrics?.total_t4_plan)}`}
+            />
+          </div>
         </div>
 
         {/* Total Metas Card */}
@@ -193,10 +221,10 @@ export default function Dashboard() {
                       Entidad Responsable
                     </h3>
                     <p className="text-secondary text-sm font-medium">
-                      Secretaría de Planeación y Servicios Públicos
+                      Secretaría de Planeación
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Alcaldía Municipal de Gachancipá, Cundinamarca
+                      Alcaldía Municipal de Tenjo, Cundinamarca
                     </p>
                   </div>
                 </div>
@@ -206,8 +234,8 @@ export default function Dashboard() {
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
                   <p>
-                    © {new Date().getFullYear()} Alcaldía de Gachancipá. Todos
-                    los derechos reservados.
+                    © {new Date().getFullYear()} Alcaldía de Tenjo. Todos los
+                    derechos reservados.
                   </p>
                   <p className="mt-2 md:mt-0">
                     Dashboard desarrollado para el seguimiento del Plan

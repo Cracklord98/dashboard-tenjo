@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 try {
-  const filePath = join(__dirname, "data", "PlanIndicativo.xlsx");
+  const filePath = join(__dirname, "data", "PLAN INDICATIVO TENJO.xlsx");
   console.log("📂 Reading:", filePath);
 
   const workbook = XLSX.readFile(filePath);

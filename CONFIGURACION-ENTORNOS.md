@@ -5,7 +5,7 @@
 ### Frontend:
 - `.env` - Archivo base (local por defecto)
 - `.env.local` - Desarrollo local (http://localhost:3002)
-- `.env.production` - Producción (https://dashboard-gachancipa.onrender.com)
+- `.env.production` - Producción (https://dashboard-tenjo.onrender.com)
 
 ### Backend:
 - `.env` - Desarrollo local
@@ -41,7 +41,7 @@ cd frontend
 npm run build
 ```
 ✅ Vite lee automáticamente `.env.production` al hacer build
-✅ Se conecta a: https://dashboard-gachancipa.onrender.com
+✅ Se conecta a: https://dashboard-tenjo.onrender.com
 
 **Backend:**
 Render usa las variables de entorno configuradas en su panel:
@@ -62,7 +62,7 @@ Render usa las variables de entorno configuradas en su panel:
 - Frontend: http://localhost:3000
 
 **Producción:**
-- Backend health check: https://dashboard-gachancipa.onrender.com/health
+- Backend health check: https://dashboard-tenjo.onrender.com/health
 - Frontend: Tu URL de Vercel/Netlify
 
 ## 🔒 Seguridad

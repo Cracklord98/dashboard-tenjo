@@ -31,6 +31,12 @@ export default function ProgramsTable({ programs }) {
               Metas
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-primary uppercase tracking-wider">
+              T1 %
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-primary uppercase tracking-wider">
+              T2 %
+            </th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-primary uppercase tracking-wider">
               T3 %
             </th>
             <th className="px-6 py-3 text-center text-xs font-medium text-primary uppercase tracking-wider">
@@ -49,6 +55,24 @@ export default function ProgramsTable({ programs }) {
               </td>
               <td className="px-6 py-4 text-sm text-center text-secondary">
                 {program.metas_count}
+              </td>
+              <td className="px-6 py-4 text-sm text-center">
+                <span
+                  className={`font-semibold ${getStatusClass(
+                    program.t1_cumplimiento || 0
+                  )}`}
+                >
+                  {(program.t1_cumplimiento || 0).toFixed(1)}%
+                </span>
+              </td>
+              <td className="px-6 py-4 text-sm text-center">
+                <span
+                  className={`font-semibold ${getStatusClass(
+                    program.t2_cumplimiento || 0
+                  )}`}
+                >
+                  {(program.t2_cumplimiento || 0).toFixed(1)}%
+                </span>
               </td>
               <td className="px-6 py-4 text-sm text-center">
                 <span

@@ -1,12 +1,15 @@
 services:
   - type: web
-    name: plan-indicativo-backend
+    name: dashboard-tenjo-backend
     runtime: node
     region: oregon
     plan: free
+    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: FRONTEND_URL
+        value: https://dashboard-tenjo.vercel.app
     healthCheckPath: /health
